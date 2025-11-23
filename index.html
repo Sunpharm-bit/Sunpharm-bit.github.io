@@ -1,18 +1,276 @@
 <!DOCTYPE html>
 <html lang="zh-cmn-Hans">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="./statics/github.css">
-    <link rel="stylesheet" href="./statics/theme.css">
-    <script src="./statics/modules/jquery.min.js"></script>
-    <script type="module">
-        import { IO } from "./statics/modules/tools.js"
-        let page = 10
-        let url = `https://api.github.com/repos/Sunpharm-bit/Sunpharm-bit.github.io/commits?per_page=${page}`
+    <title>QC TOOL</title>
+    <style>
+        /* 基础样式 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #24292e;
+            background-color: #f6f8fa;
+            margin: 0;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h4 {
+            color: #0366d6;
+            border-bottom: 1px solid #eaecef;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        
+        .list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .item {
+            background-color: #fff;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .item:hover {
+            border-color: #0366d6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .about {
+            background-color: #fff;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 30px;
+        }
+        
+        a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        /* RSD计算器样式 */
+        .rsd-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .rsd-header {
+            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .rsd-content {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .rsd-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .rsd-section-title {
+            font-size: 18px;
+            color: #2575fc;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .rsd-input-group {
+            margin-bottom: 15px;
+        }
+        
+        .rsd-input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .rsd-input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .rsd-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .rsd-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(37, 117, 252, 0.3);
+        }
+        
+        .rsd-result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .rsd-result-label {
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .rsd-result-value {
+            font-weight: bold;
+            color: #2575fc;
+        }
+        
+        .rsd-chart-container {
+            margin-top: 20px;
+            height: 250px;
+            background: white;
+            border-radius: 6px;
+            padding: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .rsd-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <!-- 使用CDN引入jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- 使用CDN引入Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
 
-        let functions = [
+<body>
+    <h4>功能列表</h4>
+    <div class="list"></div>
+    <h4>关于</h4>
+    <div class="about">
+        <p>建议使用系统自带浏览器，以完善使用体验！</p>
+        本项目开源于
+        <a href="https://github.com/Sunpharm-bit/Sunpharm-bit.github.io">Github</a> ，并由
+        <a href="https://docs.github.com/en/pages">Github Pages</a> 提供页面构建及部署服务。
+    </div>
+
+    <!-- RSD计算器内容 -->
+    <div id="rsd-calculator" style="display: none; margin-top: 40px;">
+        <div class="rsd-container">
+            <div class="rsd-header">
+                <h2>相对标准偏差 (RSD) 计算器</h2>
+                <p>相对标准偏差 (RSD) 是标准偏差与平均值的比值，通常以百分比表示，用于衡量数据的离散程度。</p>
+            </div>
+            
+            <div class="rsd-content">
+                <div class="rsd-section">
+                    <h3 class="rsd-section-title">输入数据</h3>
+                    <div class="rsd-input-group">
+                        <label for="dataInput">输入数值（每行一个或逗号分隔）</label>
+                        <textarea id="dataInput" placeholder="例如：
+23.5
+24.1
+22.8
+23.9
+24.5
+或
+23.5, 24.1, 22.8, 23.9, 24.5"></textarea>
+                        <small>支持小数点，每行一个数值或用逗号分隔</small>
+                    </div>
+                    
+                    <button id="calculateRsdBtn" class="rsd-btn">计算 RSD</button>
+                    <button id="clearRsdBtn" class="rsd-btn" style="background: linear-gradient(90deg, #ff4757 0%, #ff3742 100%); margin-top: 10px;">清除数据</button>
+                    
+                    <div class="rsd-input-group" style="margin-top: 20px;">
+                        <label for="decimalPlaces">小数位数</label>
+                        <select id="decimalPlaces" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px; font-size: 14px;">
+                            <option value="2">2 位小数</option>
+                            <option value="3">3 位小数</option>
+                            <option value="4">4 位小数</option>
+                            <option value="5">5 位小数</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="rsd-section">
+                    <h3 class="rsd-section-title">计算结果</h3>
+                    <div class="rsd-results">
+                        <div class="rsd-result-item">
+                            <span class="rsd-result-label">数据数量 (n):</span>
+                            <span class="rsd-result-value" id="dataCount">-</span>
+                        </div>
+                        <div class="rsd-result-item">
+                            <span class="rsd-result-label">平均值 (μ):</span>
+                            <span class="rsd-result-value" id="meanValue">-</span>
+                        </div>
+                        <div class="rsd-result-item">
+                            <span class="rsd-result-label">标准偏差 (σ):</span>
+                            <span class="rsd-result-value" id="stdDevValue">-</span>
+                        </div>
+                        <div class="rsd-result-item" style="background: #e8f4ff;">
+                            <span class="rsd-result-label">相对标准偏差 (RSD):</span>
+                            <span class="rsd-result-value" id="rsdValue">-</span>
+                        </div>
+                        <div class="rsd-result-item" style="background: #e8f4ff;">
+                            <span class="rsd-result-label">RSD (%):</span>
+                            <span class="rsd-result-value" id="rsdPercentValue">-</span>
+                        </div>
+                    </div>
+                    
+                    <div class="rsd-chart-container">
+                        <canvas id="dataChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 功能列表数据
+        const functions = [
             {
                 "name": "干燥失重计算",
                 "location": "./views/lod.html"
@@ -35,67 +293,235 @@
             },
             {
                 "name": "相对标准偏差 (RSD) 计算器",
-                "location": "./views/rsd.html"
+                "location": "#",
+                "id": "rsd-calculator-btn"
             }
-        ]
+        ];
 
-        $(() => {
+        $(document).ready(function() {
             // 加载功能列表
             functions.forEach(value => {
-                let onclick = `window.location.href='${value.location}'`
-                let div = `<div class="item" onclick="${onclick}">${value.name}</div>`
-                $(".list").append(div)
-            })
+                if (value.id) {
+                    // 对于RSD计算器，我们直接在页面内显示
+                    let div = `<div class="item" id="${value.id}">${value.name}</div>`;
+                    $(".list").append(div);
+                    
+                    // 为RSD计算器按钮添加点击事件
+                    $("#rsd-calculator-btn").click(function() {
+                        $("#rsd-calculator").toggle();
+                    });
+                } else {
+                    let onclick = `window.location.href='${value.location}'`;
+                    let div = `<div class="item" onclick="${onclick}">${value.name}</div>`;
+                    $(".list").append(div);
+                }
+            });
 
-            // 加载最近的 commit 记录
-            $.getJSON(url, data => {
-                let color1 = '#f9f9f9'
-                let color2 = '#f3f3f3'
-                let changeColor = false
-                data.forEach(element => {
-                    // 处理换行和+号
-                    let message = element.commit.message.replaceAll("\n", "<br>")
-                    if (message.startsWith("+")) {
-                        message = message.replace("+", "<br>&nbsp;&nbsp;<strong>&bull;</strong>")
+            // RSD计算器功能
+            let dataChart = null;
+            
+            // 初始化图表
+            function initChart() {
+                const ctx = document.getElementById('dataChart').getContext('2d');
+                dataChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: '数据值',
+                            data: [],
+                            backgroundColor: 'rgba(37, 117, 252, 0.7)',
+                            borderColor: 'rgba(37, 117, 252, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                title: {
+                                    display: true,
+                                    text: '数值'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: '数据点'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            title: {
+                                display: true,
+                                text: '数据分布图'
+                            }
+                        }
                     }
-                    message = message.replaceAll("+", "&nbsp;&nbsp;<strong>&bull;</strong>")
+                });
+            }
+            
+            // 计算RSD
+            $("#calculateRsdBtn").click(function() {
+                calculateRSD();
+            });
+            
+            // 清除数据
+            $("#clearRsdBtn").click(function() {
+                $("#dataInput").val('');
+                resetRSDResults();
+            });
+            
+            // 初始化图表
+            initChart();
+            
+            // 设置示例数据
+            $("#dataInput").val("23.5\n24.1\n22.8\n23.9\n24.5");
+            
+            // 初始计算
+            calculateRSD();
+        });
 
-                    // 处理提交的日期
-                    let date = new Date(element.commit.committer.date) // "2025-11-23T10:54:36Z"
-                    date = new Date(+ new Date(date) + 28800000).toISOString()
-                    date = date.replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
-
-                    // 组装标题信息
-                    let verifiedString = "<span style='color: green;'><strong>Verified</strong></span>"
-                    let hash = `<a href='${element.html_url}'>${element.sha.slice(0, 7)}</a>`
-                    let verified = `${element.commit.verification.verified ? verifiedString : ""}`
-                    let header = `${hash} ${date} ${verified}`
-
-                    changeColor = !changeColor
-                    let color = `${changeColor ? color1 : color2}`
-                    let msg = `
-                    <div style="background-color: ${color}; padding: 5px 0px 5px 10px">
-                        ${header}
-                        ${message}
-                    </div>`
-                    $(".changelog").append(msg)
-                })
-            })
-        })
+        // 计算RSD函数
+        function calculateRSD() {
+            const inputText = $("#dataInput").val().trim();
+            if (!inputText) {
+                alert('请输入数据');
+                return;
+            }
+            
+            // 解析输入数据
+            let data = parseData(inputText);
+            
+            if (data.length === 0) {
+                alert('未找到有效数值数据');
+                return;
+            }
+            
+            if (data.length < 2) {
+                alert('需要至少两个数据点才能计算标准偏差');
+                return;
+            }
+            
+            // 计算统计值
+            const stats = calculateStats(data);
+            
+            // 更新结果显示
+            updateRSDResults(stats, data);
+            
+            // 更新图表
+            updateChart(data, stats.mean);
+        }
+        
+        // 解析输入数据
+        function parseData(input) {
+            // 替换中文逗号为英文逗号
+            input = input.replace(/，/g, ',');
+            
+            // 分割数据
+            let numbers = [];
+            if (input.includes(',') || input.includes('\n')) {
+                // 使用逗号或换行符分割
+                const parts = input.split(/[\n,]/);
+                numbers = parts.map(part => {
+                    const num = parseFloat(part.trim());
+                    return isNaN(num) ? null : num;
+                }).filter(num => num !== null);
+            } else {
+                // 尝试直接解析
+                const num = parseFloat(input);
+                if (!isNaN(num)) {
+                    numbers = [num];
+                }
+            }
+            
+            return numbers;
+        }
+        
+        // 计算统计值
+        function calculateStats(data) {
+            const n = data.length;
+            
+            // 计算平均值
+            const sum = data.reduce((a, b) => a + b, 0);
+            const mean = sum / n;
+            
+            // 计算标准偏差
+            const squaredDiffs = data.map(value => Math.pow(value - mean, 2));
+            const variance = squaredDiffs.reduce((a, b) => a + b, 0) / (n - 1);
+            const stdDev = Math.sqrt(variance);
+            
+            // 计算RSD
+            const rsd = stdDev / mean;
+            const rsdPercent = rsd * 100;
+            
+            return {
+                n: n,
+                mean: mean,
+                stdDev: stdDev,
+                rsd: rsd,
+                rsdPercent: rsdPercent
+            };
+        }
+        
+        // 更新结果显示
+        function updateRSDResults(stats, data) {
+            const decimal = parseInt($("#decimalPlaces").val());
+            
+            $("#dataCount").text(stats.n);
+            $("#meanValue").text(stats.mean.toFixed(decimal));
+            $("#stdDevValue").text(stats.stdDev.toFixed(decimal));
+            $("#rsdValue").text(stats.rsd.toFixed(decimal + 2));
+            $("#rsdPercentValue").text(stats.rsdPercent.toFixed(decimal) + '%');
+        }
+        
+        // 更新图表
+        function updateChart(data, mean) {
+            const labels = data.map((_, i) => `数据 ${i + 1}`);
+            
+            dataChart.data.labels = labels;
+            dataChart.data.datasets[0].data = data;
+            
+            // 如果之前有平均线，移除它
+            if (dataChart.data.datasets.length > 1) {
+                dataChart.data.datasets = [dataChart.data.datasets[0]];
+            }
+            
+            // 添加平均线
+            dataChart.data.datasets.push({
+                label: '平均值',
+                data: Array(data.length).fill(mean),
+                type: 'line',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 2,
+                pointRadius: 0,
+                fill: false
+            });
+            
+            dataChart.update();
+        }
+        
+        // 重置结果
+        function resetRSDResults() {
+            $("#dataCount").text('-');
+            $("#meanValue").text('-');
+            $("#stdDevValue").text('-');
+            $("#rsdValue").text('-');
+            $("#rsdPercentValue").text('-');
+            
+            // 重置图表
+            dataChart.data.labels = [];
+            dataChart.data.datasets[0].data = [];
+            if (dataChart.data.datasets.length > 1) {
+                dataChart.data.datasets = [dataChart.data.datasets[0]];
+            }
+            dataChart.update();
+        }
     </script>
-    <title>QC TOOL</title>
-</head>
-
-<body>
-    <h4>功能列表</h4>
-    <div class="list"></div>
-    <h4>关于</h4>
-    <div class="about">
-        <p>建议使用系统自带浏览器，以完善使用体验！</p>
-        本项目开源于
-        <a href="https://github.com/Sunpharm-bit/Sunpharm-bit.github.io">Github</a> ，并由
-        <a href="https://docs.github.com/en/pages">Github Pages</a> 提供页面构建及部署服务。
-    </div>
-    <div class="changelog" style="width: 100%;"></div>
 </body>
 </html>
