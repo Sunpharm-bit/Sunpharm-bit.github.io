@@ -9,8 +9,6 @@
     <script src="./statics/modules/jquery.min.js"></script>
     <script type="module">
         import { IO } from "./statics/modules/tools.js"
-        let page = 10
-        let url = `https://api.github.com/repos/Sunpharm-bit/Sunpharm-bit.github.io/commits?per_page=${page}`
 
         let functions = [
             {
@@ -45,44 +43,6 @@
                 let onclick = `window.location.href='${value.location}'`
                 let div = `<div class="item" onclick="${onclick}">${value.name}</div>`
                 $(".list").append(div)
-            })
-
-            // 加载最近的 commit 记录
-            $.getJSON(url, data => {
-                let color1 = '#f9f9f9'
-                let color2 = '#f3f3f3'
-                let changeColor = false
-                data.forEach(element => {
-                    // 处理换行和+号
-                    let message = element.commit.message.replaceAll("\n", "<br>")
-                    if (message.startsWith("+")) {
-                        message = message.replace("+", "<br>&nbsp;&nbsp;<strong>&bull;</strong>")
-                    }
-                    message = message.replaceAll("+", "&nbsp;&nbsp;<strong>&bull;</strong>")
-
-                    // 处理提交的日期
-                    let date = new Date(element.commit.committer.date) // "2025-11-23T10:54:36Z"
-                    date = new Date(+ new Date(date) + 28800000).toISOString()
-                    date = date.replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
-
-                    // 组装标题信息
-                    let verifiedString = "<span style='color: green;'><strong>Verified</strong></span>"
-                    let hash = `<a href='${element.html_url}'>${element.sha.slice(0, 7)}</a>`
-                    let verified = `${element.commit.verification.verified ? verifiedString : ""}`
-                    let header = `${hash} ${date} ${verified}`
-
-                    changeColor = !changeColor
-                    let color = `${changeColor ? color1 : color2}`
-                    let msg = `
-                    <div style="background-color: ${color}; padding: 5px 0px 5px 10px">
-                        ${header}
-                        ${message}
-                    </div>`
-                    $(".changelog").append(msg)
-                })
-            }).fail(function() {
-                $("#changelog_title").text("变更日志 (加载失败)");
-                $(".changelog").html("<div style='padding: 10px;'>无法加载更新记录，请检查网络连接或稍后重试。</div>");
             })
         })
     </script>
@@ -136,14 +96,6 @@
             border: 1px solid #e1e4e8;
             border-radius: 6px;
             padding: 16px;
-            margin-bottom: 30px;
-        }
-        
-        .changelog {
-            background-color: #fff;
-            border: 1px solid #e1e4e8;
-            border-radius: 6px;
-            overflow: hidden;
         }
         
         a {
@@ -173,7 +125,7 @@
         本项目开源于
         <a href="https://github.com/Sunpharm-bit/Sunpharm-bit.github.io">Github</a> ，并由
         <a href="https://docs.github.com/en/pages">Github Pages</a> 提供页面构建及部署服务。
-    <div class="changelog" style="width: 100%;"></div>
+    </div>
 </body>
 
 </html>
