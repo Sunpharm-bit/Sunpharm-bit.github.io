@@ -61,7 +61,7 @@
                     message = message.replaceAll("+", "&nbsp;&nbsp;<strong>&bull;</strong>")
 
                     // 处理提交的日期
-                    let date = new Date(element.commit.committer.date) // "2022-10-08T10:54:36Z"
+                    let date = new Date(element.commit.committer.date) // "2025-11-23T10:54:36Z"
                     date = new Date(+ new Date(date) + 28800000).toISOString()
                     date = date.replace(/T/g, ' ').replace(/\.[\d]{3}Z/, '')
 
