@@ -318,6 +318,20 @@
         #useSystemClock {
             width: 20px;
         }
+        
+        /* 新增样式：使四个选项并排显示 */
+        .instrument-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        
+        .instrument-option {
+            width: 48%;
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 
@@ -378,12 +392,26 @@
 
                     <span style="font-size: small;">选择你使用的仪器，以确定时间补偿的力度。</span>
 
-                    <div>
-                        <input type="radio" value="24" name="offset_type" id="shimadzu" checked>
-                        <label for="shimadzu">岛津</label>
+                    <div class="instrument-options">
+                        <div class="instrument-option">
+                            <input type="radio" value="24" name="offset_type" id="shimadzu" checked>
+                            <label for="shimadzu">岛津</label>
+                        </div>
 
-                        <input type="radio" value="84" name="offset_type" id="agilent">
-                        <label for="agilent">安捷伦</label>
+                        <div class="instrument-option">
+                            <input type="radio" value="84" name="offset_type" id="agilent">
+                            <label for="agilent">安捷伦</label>
+                        </div>
+                        
+                        <div class="instrument-option">
+                            <input type="radio" value="30" name="offset_type" id="waters">
+                            <label for="waters">沃特世</label>
+                        </div>
+                        
+                        <div class="instrument-option">
+                            <input type="radio" value="30" name="offset_type" id="thermo">
+                            <label for="thermo">赛默飞</label>
+                        </div>
                     </div>
 
                 </fieldset>
