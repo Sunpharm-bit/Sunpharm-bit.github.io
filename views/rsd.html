@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QC计算工具集</title>
+    <title>计算工具集</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/regression@2.0.1/dist/regression.min.js"></script>
     <style>
@@ -15,7 +15,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-color: #ffffff;
             color: #333;
             line-height: 1.6;
             min-height: 100vh;
@@ -25,27 +25,29 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             overflow: hidden;
+            border: 1px solid #eaeaea;
         }
         
         .header {
-            background: linear-gradient(90deg, #1a2a6c, #b21f1f);
-            color: white;
+            background: #f8f9fa;
+            color: #333;
             padding: 30px 20px;
             text-align: center;
+            border-bottom: 1px solid #eaeaea;
         }
         
         .header h1 {
-            font-size: 36px;
+            font-size: 32px;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            color: #1a2a6c;
         }
         
         .header p {
-            opacity: 0.9;
+            color: #666;
             font-size: 18px;
             max-width: 800px;
             margin: 0 auto;
@@ -91,16 +93,18 @@
         
         .calculator {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
             overflow: hidden;
             margin-bottom: 30px;
+            border: 1px solid #eaeaea;
         }
         
         .calculator-header {
-            background: linear-gradient(90deg, #1a2a6c, #b21f1f);
-            color: white;
+            background: #f8f9fa;
+            color: #333;
             padding: 20px;
+            border-bottom: 1px solid #eaeaea;
         }
         
         .calculator-content {
@@ -126,10 +130,11 @@
         .input-group textarea {
             width: 100%;
             padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
             font-size: 16px;
             transition: border-color 0.3s;
+            background: #fdfdfd;
         }
         
         .input-group input:focus, 
@@ -137,25 +142,35 @@
         .input-group textarea:focus {
             border-color: #1a2a6c;
             outline: none;
+            background: white;
         }
         
         .btn {
             display: inline-block;
             padding: 12px 24px;
-            background: linear-gradient(90deg, #1a2a6c, #b21f1f);
+            background: #1a2a6c;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             width: 100%;
         }
         
         .btn:hover {
+            background: #2c3e50;
             transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(26, 42, 108, 0.3);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-clear {
+            background: #dc3545;
+        }
+        
+        .btn-clear:hover {
+            background: #c82333;
         }
         
         .results {
@@ -166,10 +181,10 @@
             display: flex;
             justify-content: space-between;
             padding: 12px;
-            background: white;
-            border-radius: 8px;
+            background: #f8f9fa;
+            border-radius: 6px;
             margin-bottom: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eaeaea;
         }
         
         .result-label {
@@ -186,30 +201,31 @@
             margin-top: 20px;
             height: 300px;
             background: white;
-            border-radius: 8px;
+            border-radius: 6px;
             padding: 15px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eaeaea;
         }
         
         .interpretation {
             margin-top: 20px;
             padding: 15px;
-            background: #fff9e6;
-            border-left: 4px solid #ffc107;
-            border-radius: 0 8px 8px 0;
+            background: #f8f9fa;
+            border-left: 4px solid #1a2a6c;
+            border-radius: 0 6px 6px 0;
         }
         
         .interpretation h4 {
-            color: #e65100;
+            color: #1a2a6c;
             margin-bottom: 10px;
         }
         
         .footer {
             text-align: center;
             padding: 20px;
-            background: #1a2a6c;
-            color: white;
+            background: #f8f9fa;
+            color: #666;
             margin-top: 40px;
+            border-top: 1px solid #eaeaea;
         }
         
         @media (max-width: 768px) {
@@ -249,8 +265,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>QC计算工具集</h1>
-            <p>为实验室工作提供专业的计算和分析工具</p>
+            <h1>计算工具集</h1>
+            <p>为工作提供计算和分析工具</p>
         </div>
         
         <div class="tabs">
@@ -430,7 +446,7 @@
                         </div>
                         
                         <button id="calculateRsdBtn" class="btn">计算 RSD</button>
-                        <button id="clearRsdBtn" class="btn" style="background: linear-gradient(90deg, #ff4757, #ff3742); margin-top: 10px;">清除数据</button>
+                        <button id="clearRsdBtn" class="btn btn-clear" style="margin-top: 10px;">清除数据</button>
                     </div>
                     
                     <div>
@@ -505,7 +521,7 @@
                         </div>
                         
                         <button id="calculateCalibrationBtn" class="btn">计算浓度</button>
-                        <button id="clearCalibrationBtn" class="btn" style="background: linear-gradient(90deg, #ff4757, #ff3742); margin-top: 10px;">清除数据</button>
+                        <button id="clearCalibrationBtn" class="btn btn-clear" style="margin-top: 10px;">清除数据</button>
                     </div>
                     
                     <div>
@@ -539,7 +555,7 @@
         </div>
         
         <div class="footer">
-            <p>QC计算工具集 &copy; 2025 | 为实验提供计算支持</p>
+            <p>计算工具集 &copy; 2025 | 为实验提供计算支持</p>
         </div>
     </div>
 
